@@ -14,6 +14,9 @@ public class Admin {
     private JButton startButton;
     private JLabel timerLabel;
     private JPanel adminPanel;
+    private JPanel ADMINPANEL;
+    private JLabel ITEMNAME;
+    private JLabel PRICE;
     private JButton ADDITEMButton;
     private JTable table1;
     private JTextField nameData;
