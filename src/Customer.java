@@ -1,12 +1,11 @@
-import javax.swing.*;
+import javax.swing.;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.*;
+import java.sql.;
 import java.util.Vector;
-public class Customer extends Admin{
 
-
+public class Customer extends Admin {
     private JLabel timerLabel;
     private JPanel customPanel;
     private JLabel CUSTOMERPANEL;
@@ -18,16 +17,23 @@ public class Customer extends Admin{
     private JLabel price;
     private JLabel image;
     private JButton close;
-    private String priceS="",name = "",bidder="";
+    private String priceS = "";
+    private String name = "";
+    private String bidder = "";
     private ImageIcon imageS;
     private int bid;
-    Timer timer;
+    private Timer timer;
     private static int sec;
-    JFrame customerF = new JFrame();
-    public Customer(){
+    private JFrame customerF = new JFrame();
+
+    // Constructor
+    public Customer() {
+        // Setting content pane and visibility of the frame
         customerF.setContentPane(customPanel);
         customerF.pack();
         customerF.setVisible(true);
+
+        // Initializing variables
         sec = Admin.sec;
         startTimer();
         timer.start();
@@ -37,30 +43,35 @@ public class Customer extends Admin{
         itemName.setText(name);
         price.setText(priceS);
         image.setIcon(imageS);
+
+        // Adding action listener to the add bid button
         ADDBIDButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(bidName.getText().equals("")|| bidPrice.getText().equals("")){
-                    JOptionPane.showMessageDialog(null,"Please Fill All Fields to add Record.");
-                }else{
+                // Checking if both fields are filled
+                if (bidName.getText().equals("") || bidPrice.getText().equals("")) {
+                    JOptionPane.showMessageDialog(null, "Please Fill All Fields to add Record.");
+                } else {
                     try {
-                        String sql = "insert into bid"+"(Bidder_Name,Bid)"+"values (?,?)";
+                        String sql = "INSERT INTO bid (Bidder_Name, Bid) VALUES (?,?)";
                         Class.forName("com.mysql.cj.jdbc.Driver");
-                        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/intern","root","root");
+                        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/intern", "root", "root");
                         PreparedStatement statement = connection.prepareStatement(sql);
-                        statement.setString(1,bidName.getText());
+                        statement.setString(1, bidName.getText());
                         statement.setInt(2, Integer.parseInt(bidPrice.getText()));
                         statement.executeUpdate();
-                        JOptionPane.showMessageDialog(null,"ITEM ADDED SUCCESSFULLY");
+                        JOptionPane.showMessageDialog(null, "ITEM ADDED SUCCESSFULLY");
                         bidName.setText("");
                         bidPrice.setText("");
-                    }catch (Exception ex){
-                        JOptionPane.showMessageDialog(null,ex.getMessage());
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null, ex.getMessage());
                     }
                     tableData();
                 }
             }
         });
+
+        // Adding action listener to the close button
         close.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

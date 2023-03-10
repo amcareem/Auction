@@ -2,15 +2,16 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.*;
-import java.text.DateFormat;
-import java.util.TimerTask;
 import java.util.Vector;
+
 public class Admin {
 
+    // Declare variables for the components of the admin panel
     private JButton startButton;
     private JLabel timerLabel;
     private JPanel adminPanel;
@@ -18,23 +19,44 @@ public class Admin {
     private JLabel ITEMNAME;
     private JLabel PRICE;
     private JButton ADDITEMButton;
-    private JTable table1;
+    private JTable bidDetails;
     private JTextField nameData;
     private JTextField priceData;
     private JTextField path;
     private JButton SELECTIMAGEButton;
+    private JButton StartButton;
     private JLabel imageLabel;
     private JButton CLOSEButton;
+
+    // Declare variables to hold admin input data
     public static String adminNameData="",adminPriceData="";
     public static ImageIcon adminImageData;
+
+    // Create a new JFrame to hold the admin panel
     JFrame adminF = new JFrame();
+
+    // Declare a Timer object for the countdown timer
     Timer timer;
+
+    // Set the initial value of the countdown timer to 60 seconds
     public static int sec = 60;
+
+    // Constructor for the Admin class
     public Admin() {
+
+        // Set the content pane of the JFrame to the admin panel
         adminF.setContentPane(adminPanel);
+
+        // Pack the JFrame to fit the size of the admin panel
         adminF.pack();
+
+        // Populate the bid details table with data from the database
         tableData();
+
+        // Make the JFrame visible
         adminF.setVisible(true);
+
+        // Add an action listener to the start button to start the countdown timer
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -42,12 +64,16 @@ public class Admin {
                 timer.start();
             }
         });
+
+        // Add an action listener to the add item button to add a new item to the auction
         ADDITEMButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Check if all fields are filled in
                 if(nameData.getText().equals("")|| path.getText().equals("")|| priceData.getText().equals("")){
                     JOptionPane.showMessageDialog(null,"Please Fill All Fields to add Record.");
                 }else{
+                    // If all fields are filled in, insert the item data into the database
                     String sql = "insert into auction"+"(ITEM_NAME,IMAGE,PRICE)"+"values (?,?,?)";
                     try {
                         File f = new File(path.getText());
@@ -67,10 +93,12 @@ public class Admin {
                     }catch (Exception ex){
                         JOptionPane.showMessageDialog(null,ex.getMessage());
                     }
+                    // Update the bid details table with the new item data
                     tableData();
                 }
             }
         });
+
         SELECTIMAGEButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -85,11 +113,11 @@ public class Admin {
                 }
             }
         });
-        table1.addMouseListener(new MouseAdapter() {
+        bidDetails.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                DefaultTableModel dm = (DefaultTableModel)table1.getModel();
-                int selectedRow = table1.getSelectedRow();
+                DefaultTableModel dm = (DefaultTableModel) bidDetails.getModel();
+                int selectedRow = bidDetails.getSelectedRow();
                 adminNameData=dm.getValueAt(selectedRow,0).toString();
                 nameData.setText(adminNameData);
                 byte[] img = (byte[]) dm.getValueAt(selectedRow,1);
@@ -138,7 +166,7 @@ public class Admin {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/intern","root","root");
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(a);
-            table1.setModel(buildTableModel(rs));
+            bidDetails.setModel(buildTableModel(rs));
         }catch (Exception ex1){
             JOptionPane.showMessageDialog(null,ex1.getMessage());
         }
